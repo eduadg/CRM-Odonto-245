@@ -83,10 +83,10 @@ label {
 
 input {
   padding: 10px 12px;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(0,0,0,0.1);
   border-radius: 8px;
-  background: #0f1115;
-  color: inherit;
+  background: #ffffff;
+  color: #0b1220;
 }
 
 .btn {
@@ -148,5 +148,14 @@ input {
   }
   .auth-illustration {
     display: none;
+  }
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  input {
+    border: 1px solid rgba(255,255,255,0.12);
+    background: #0f1115;
+    color: rgba(255,255,255,0.92);
   }
 }
