@@ -11,6 +11,8 @@ import { useAuth } from "./hooks/useAuth";
 import { useLoading } from "./hooks/useLoading";
 import { useToast } from "./hooks/useToast";
 import { formatPhone } from "./utils/phoneMask";
+import Dashboard from "./pages/Dashboard";
+import Appointments from "./pages/Appointments";
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
               </AuthLayout>
             }
           />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/appointments" element={<Appointments />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
