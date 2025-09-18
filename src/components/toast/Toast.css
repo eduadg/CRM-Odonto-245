@@ -1,0 +1,161 @@
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.toast {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-left: 4px solid;
+  animation: toast-slide-in 0.3s ease-out;
+  overflow: hidden;
+}
+
+.toast-content {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px;
+  gap: 12px;
+}
+
+.toast-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.toast-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  color: #111827;
+}
+
+.toast-message {
+  font-size: 0.9rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.toast-close:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #6b7280;
+}
+
+/* Tipos de toast */
+.toast-success {
+  border-left-color: #10b981;
+}
+
+.toast-success .toast-icon {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.toast-error {
+  border-left-color: #ef4444;
+}
+
+.toast-error .toast-icon {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.toast-warning {
+  border-left-color: #f59e0b;
+}
+
+.toast-warning .toast-icon {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.toast-info {
+  border-left-color: #3b82f6;
+}
+
+.toast-info .toast-icon {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* Animações */
+@keyframes toast-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  .toast-container {
+    left: 20px;
+    right: 20px;
+    max-width: none;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .toast {
+    background: #1f2937;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .toast-title {
+    color: #f9fafb;
+  }
+
+  .toast-message {
+    color: #d1d5db;
+  }
+
+  .toast-close {
+    color: #6b7280;
+  }
+
+  .toast-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
+  }
+}
