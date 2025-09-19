@@ -1,142 +1,97 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+"use client";
+
 import {
-  Activity,
+  AlertCircle,
   Bell,
   Calendar,
+  CalendarIcon,
+  CheckCircle,
   ChevronDown,
   Clock,
   DollarSign,
+  Edit,
   FileText,
-  Heart,
+  Filter,
   Home,
   LogOut,
+  Mail,
   Menu,
+  MoreVertical,
+  Phone,
+  Plus,
+  Search,
   Settings,
   Stethoscope,
+  Trash2,
   TrendingUp,
   User,
   Users,
   X,
-  Plus,
-  Search,
-  Filter,
-  Calendar as CalendarIcon,
-  MapPin,
-  Phone,
-  Mail,
-  Edit,
-  Trash2,
-  CheckCircle,
-  AlertCircle,
-  MoreVertical
-} from 'lucide-react';
-import './Appointments.css';
+} from "lucide-react";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { AppointmentCalendar } from "../components/appointments/AppointmentCalendar";
+import { AppointmentModal } from "../components/appointments/AppointmentModal";
+import { appointmentService } from "../services/appointmentService";
+import type { Appointment } from "../types/appointment";
+import "./Appointments.css";
 
-interface AppointmentsProps {}
+type AppointmentsProps = {};
 
 export const Appointments: React.FC<AppointmentsProps> = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('all');
-  const [viewMode, setViewMode] = useState('list'); // 'list' ou 'calendar'
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [viewMode, setViewMode] = useState("list"); // 'list' ou 'calendar'
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [stats, setStats] = useState({
+    total: 0,
+    confirmed: 0,
+    pending: 0,
+    cancelled: 0,
+    today: 0,
+    thisWeek: 0,
+    confirmationRate: 0,
+  });
 
-  const appointments = [
-    {
-      id: 1,
-      patient: 'Ana Silva',
-      phone: '(11) 99999-9999',
-      email: 'ana.silva@email.com',
-      date: '2024-01-15',
-      time: '09:00',
-      duration: 60,
-      type: 'Consulta de Rotina',
-      doctor: 'Dr. João Santos',
-      specialty: 'Clínico Geral',
-      status: 'confirmed',
-      notes: 'Paciente retorna para acompanhamento',
-      address: 'Rua das Flores, 123 - São Paulo, SP'
-    },
-    {
-      id: 2,
-      patient: 'Carlos Oliveira',
-      phone: '(11) 88888-8888',
-      email: 'carlos.oliveira@email.com',
-      date: '2024-01-15',
-      time: '10:30',
-      duration: 45,
-      type: 'Exame Preventivo',
-      doctor: 'Dra. Maria Costa',
-      specialty: 'Cardiologia',
-      status: 'pending',
-      notes: 'Primeira consulta - trazer exames anteriores',
-      address: 'Av. Paulista, 456 - São Paulo, SP'
-    },
-    {
-      id: 3,
-      patient: 'Lucia Ferreira',
-      phone: '(11) 77777-7777',
-      email: 'lucia.ferreira@email.com',
-      date: '2024-01-15',
-      time: '14:00',
-      duration: 30,
-      type: 'Retorno',
-      doctor: 'Dr. Pedro Lima',
-      specialty: 'Ortopedia',
-      status: 'confirmed',
-      notes: 'Avaliação pós-cirurgia',
-      address: 'Rua Augusta, 789 - São Paulo, SP'
-    },
-    {
-      id: 4,
-      patient: 'Roberto Mendes',
-      phone: '(11) 66666-6666',
-      email: 'roberto.mendes@email.com',
-      date: '2024-01-16',
-      time: '08:30',
-      duration: 60,
-      type: 'Consulta Especializada',
-      doctor: 'Dra. Ana Beatriz',
-      specialty: 'Dermatologia',
-      status: 'cancelled',
-      notes: 'Cancelado pelo paciente',
-      address: 'Rua Oscar Freire, 321 - São Paulo, SP'
-    },
-    {
-      id: 5,
-      patient: 'Mariana Santos',
-      phone: '(11) 55555-5555',
-      email: 'mariana.santos@email.com',
-      date: '2024-01-16',
-      time: '11:00',
-      duration: 45,
-      type: 'Primeira Consulta',
-      doctor: 'Dr. João Santos',
-      specialty: 'Clínico Geral',
-      status: 'confirmed',
-      notes: 'Nova paciente - realizar anamnese completa',
-      address: 'Alameda Santos, 654 - São Paulo, SP'
+  useEffect(() => {
+    loadAppointments();
+    loadStats();
+  }, []);
+
+  const loadAppointments = async () => {
+    try {
+      setLoading(true);
+      const data = await appointmentService.getAllAppointments();
+      setAppointments(data);
+    } catch (error) {
+      console.error("Erro ao carregar agendamentos:", error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const sidebarItems = [
-    { icon: Home, label: 'Dashboard', active: false, href: '/dashboard' },
-    { icon: Users, label: 'Pacientes', active: false, href: '/patients' },
-    { icon: Calendar, label: 'Agendamentos', active: true, href: '/appointments' },
-    { icon: Stethoscope, label: 'Consultas', active: false, href: '/consultations' },
-    { icon: FileText, label: 'Prontuários', active: false, href: '/records' },
-    { icon: DollarSign, label: 'Financeiro', active: false, href: '/financial' },
-    { icon: Settings, label: 'Configurações', active: false, href: '/settings' }
-  ];
+  const loadStats = async () => {
+    try {
+      const statsData = await appointmentService.getAppointmentStats();
+      setStats(statsData);
+    } catch (error) {
+      console.error("Erro ao carregar estatísticas:", error);
+    }
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'confirmed':
+      case "confirmed":
         return <CheckCircle size={16} className="status-confirmed" />;
-      case 'pending':
+      case "pending":
         return <Clock size={16} className="status-pending" />;
-      case 'cancelled':
+      case "cancelled":
         return <AlertCircle size={16} className="status-cancelled" />;
       default:
         return <Clock size={16} />;
@@ -145,66 +100,130 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'confirmed':
-        return 'Confirmado';
-      case 'pending':
-        return 'Pendente';
-      case 'cancelled':
-        return 'Cancelado';
+      case "confirmed":
+        return "Confirmado";
+      case "pending":
+        return "Pendente";
+      case "cancelled":
+        return "Cancelado";
       default:
-        return 'Desconhecido';
+        return "Desconhecido";
     }
   };
 
-  const filteredAppointments = appointments.filter(appointment => {
-    const matchesSearch = appointment.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         appointment.doctor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         appointment.specialty.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesFilter = selectedFilter === 'all' || appointment.status === selectedFilter;
-    
+  const filteredAppointments = appointments.filter((appointment) => {
+    const matchesSearch =
+      appointment.patientName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      appointment.dentist.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      appointment.service.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesFilter =
+      selectedFilter === "all" || appointment.status === selectedFilter;
+
     return matchesSearch && matchesFilter;
   });
 
-  const stats = [
+  const dynamicStats = [
     {
-      title: 'Total de Agendamentos',
-      value: appointments.length.toString(),
-      change: '+8%',
-      trend: 'up',
+      title: "Total de Agendamentos",
+      value: stats.total.toString(),
+      change: "+8%",
+      trend: "up",
       icon: Calendar,
-      color: 'blue'
+      color: "blue",
     },
     {
-      title: 'Confirmados Hoje',
-      value: appointments.filter(a => a.date === '2024-01-15' && a.status === 'confirmed').length.toString(),
-      change: '+12%',
-      trend: 'up',
+      title: "Confirmados Hoje",
+      value: stats.today.toString(),
+      change: "+12%",
+      trend: "up",
       icon: CheckCircle,
-      color: 'green'
+      color: "green",
     },
     {
-      title: 'Pendentes',
-      value: appointments.filter(a => a.status === 'pending').length.toString(),
-      change: '-5%',
-      trend: 'down',
+      title: "Pendentes",
+      value: stats.pending.toString(),
+      change: "-5%",
+      trend: "down",
       icon: Clock,
-      color: 'orange'
+      color: "orange",
     },
     {
-      title: 'Taxa de Confirmação',
-      value: '87%',
-      change: '+3%',
-      trend: 'up',
+      title: "Taxa de Confirmação",
+      value: `${stats.confirmationRate}%`,
+      change: "+3%",
+      trend: "up",
       icon: TrendingUp,
-      color: 'purple'
-    }
+      color: "purple",
+    },
   ];
+
+  const handleSaveAppointment = async (data: any) => {
+    try {
+      setLoading(true);
+      await appointmentService.createAppointment(data);
+      await loadAppointments();
+      await loadStats();
+      setIsModalOpen(false);
+      console.log("Agendamento criado com sucesso!");
+    } catch (error: any) {
+      console.error("Erro ao criar agendamento:", error);
+      alert(error.message || "Erro ao criar agendamento");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+  };
+
+  const handleAppointmentClick = (appointment: Appointment) => {
+    console.log("Agendamento clicado:", appointment);
+    // Aqui você pode abrir um modal de detalhes ou edição
+  };
+
+  const handleAppointmentAction = async (
+    action: string,
+    appointmentId: string
+  ) => {
+    try {
+      setLoading(true);
+
+      switch (action) {
+        case "edit":
+          // Implementar edição
+          console.log("Editar agendamento:", appointmentId);
+          break;
+        case "cancel":
+          await appointmentService.updateAppointment(appointmentId, {
+            status: "cancelado",
+          });
+          await loadAppointments();
+          await loadStats();
+          break;
+        case "delete":
+          if (confirm("Tem certeza que deseja excluir este agendamento?")) {
+            await appointmentService.deleteAppointment(appointmentId);
+            await loadAppointments();
+            await loadStats();
+          }
+          break;
+      }
+    } catch (error: any) {
+      console.error("Erro na ação:", error);
+      alert(error.message || "Erro ao executar ação");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="appointments">
       {/* Sidebar */}
-      <aside className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
+      <aside className={`sidebar ${sidebarOpen ? "sidebar-open" : ""}`}>
         <div className="sidebar-header">
           <div className="brand">
             <div className="logo-circle">CR</div>
@@ -213,7 +232,7 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
               <p>Agendamentos</p>
             </div>
           </div>
-          <button 
+          <button
             className="sidebar-close"
             onClick={() => setSidebarOpen(false)}
           >
@@ -222,11 +241,54 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
         </div>
 
         <nav className="sidebar-nav">
-          {sidebarItems.map((item, index) => (
+          {[
+            {
+              icon: Home,
+              label: "Dashboard",
+              active: false,
+              href: "/dashboard",
+            },
+            {
+              icon: Users,
+              label: "Pacientes",
+              active: false,
+              href: "/patients",
+            },
+            {
+              icon: Calendar,
+              label: "Agendamentos",
+              active: true,
+              href: "/appointments",
+            },
+            {
+              icon: Stethoscope,
+              label: "Consultas",
+              active: false,
+              href: "/consultations",
+            },
+            {
+              icon: FileText,
+              label: "Prontuários",
+              active: false,
+              href: "/records",
+            },
+            {
+              icon: DollarSign,
+              label: "Financeiro",
+              active: false,
+              href: "/financial",
+            },
+            {
+              icon: Settings,
+              label: "Configurações",
+              active: false,
+              href: "/settings",
+            },
+          ].map((item, index) => (
             <Link
               key={index}
               to={item.href}
-              className={`nav-item ${item.active ? 'nav-item-active' : ''}`}
+              className={`nav-item ${item.active ? "nav-item-active" : ""}`}
             >
               <item.icon size={20} />
               <span>{item.label}</span>
@@ -247,7 +309,7 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
         {/* Header */}
         <header className="appointments-header">
           <div className="header-left">
-            <button 
+            <button
               className="menu-toggle"
               onClick={() => setSidebarOpen(true)}
             >
@@ -266,7 +328,7 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
             </button>
 
             <div className="user-menu">
-              <button 
+              <button
                 className="user-btn"
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
               >
@@ -302,7 +364,7 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
         <div className="appointments-content">
           {/* Stats Grid */}
           <div className="stats-grid">
-            {stats.map((stat, index) => (
+            {dynamicStats.map((stat, index) => (
               <div key={index} className={`stat-card stat-${stat.color}`}>
                 <div className="stat-icon">
                   <stat.icon size={24} />
@@ -310,7 +372,11 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
                 <div className="stat-content">
                   <div className="stat-value">{stat.value}</div>
                   <div className="stat-label">{stat.title}</div>
-                  <div className={`stat-change ${stat.trend === 'up' ? 'stat-up' : 'stat-down'}`}>
+                  <div
+                    className={`stat-change ${
+                      stat.trend === "up" ? "stat-up" : "stat-down"
+                    }`}
+                  >
                     <TrendingUp size={14} />
                     <span>{stat.change}</span>
                   </div>
@@ -331,11 +397,11 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              
+
               <div className="filter-select">
                 <Filter size={16} />
-                <select 
-                  value={selectedFilter} 
+                <select
+                  value={selectedFilter}
                   onChange={(e) => setSelectedFilter(e.target.value)}
                 >
                   <option value="all">Todos os Status</option>
@@ -348,23 +414,28 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
 
             <div className="controls-right">
               <div className="view-toggle">
-                <button 
-                  className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
-                  onClick={() => setViewMode('list')}
+                <button
+                  className={`view-btn ${viewMode === "list" ? "active" : ""}`}
+                  onClick={() => setViewMode("list")}
                 >
                   <FileText size={16} />
                   <span>Lista</span>
                 </button>
-                <button 
-                  className={`view-btn ${viewMode === 'calendar' ? 'active' : ''}`}
-                  onClick={() => setViewMode('calendar')}
+                <button
+                  className={`view-btn ${
+                    viewMode === "calendar" ? "active" : ""
+                  }`}
+                  onClick={() => setViewMode("calendar")}
                 >
                   <CalendarIcon size={16} />
                   <span>Calendário</span>
                 </button>
               </div>
 
-              <button className="btn-primary">
+              <button
+                className="btn-primary"
+                onClick={() => setIsModalOpen(true)}
+              >
                 <Plus size={16} />
                 <span>Novo Agendamento</span>
               </button>
@@ -372,85 +443,134 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
           </div>
 
           {/* Appointments List */}
-          <div className="appointments-list">
-            <div className="list-header">
-              <div className="list-title">
-                <h3>Agendamentos</h3>
-                <span className="appointments-count">{filteredAppointments.length} agendamentos</span>
-              </div>
+          {viewMode === "calendar" ? (
+            <div className="calendar-section">
+              <AppointmentCalendar
+                appointments={appointments}
+                onDateSelect={handleDateSelect}
+                onAppointmentClick={handleAppointmentClick}
+                selectedDate={selectedDate}
+              />
             </div>
-
-            <div className="appointments-table">
-              {filteredAppointments.map((appointment) => (
-                <div key={appointment.id} className="appointment-row">
-                  <div className="appointment-time">
-                    <div className="time-display">
-                      <Clock size={16} />
-                      <span>{appointment.time}</span>
-                    </div>
-                    <div className="date-display">{appointment.date}</div>
-                  </div>
-
-                  <div className="appointment-patient">
-                    <div className="patient-info">
-                      <h4>{appointment.patient}</h4>
-                      <div className="patient-contact">
-                        <Phone size={14} />
-                        <span>{appointment.phone}</span>
-                      </div>
-                      <div className="patient-contact">
-                        <Mail size={14} />
-                        <span>{appointment.email}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="appointment-details">
-                    <div className="appointment-type">{appointment.type}</div>
-                    <div className="appointment-doctor">
-                      {appointment.doctor} • {appointment.specialty}
-                    </div>
-                    <div className="appointment-duration">
-                      <Clock size={14} />
-                      <span>{appointment.duration} min</span>
-                    </div>
-                  </div>
-
-                  <div className="appointment-location">
-                    <MapPin size={16} />
-                    <span>{appointment.address}</span>
-                  </div>
-
-                  <div className="appointment-status">
-                    <div className="status-badge">
-                      {getStatusIcon(appointment.status)}
-                      <span>{getStatusText(appointment.status)}</span>
-                    </div>
-                  </div>
-
-                  <div className="appointment-actions">
-                    <button className="action-btn" title="Editar">
-                      <Edit size={16} />
-                    </button>
-                    <button className="action-btn" title="Cancelar">
-                      <Trash2 size={16} />
-                    </button>
-                    <button className="action-btn" title="Mais opções">
-                      <MoreVertical size={16} />
-                    </button>
-                  </div>
+          ) : (
+            <div className="appointments-list">
+              <div className="list-header">
+                <div className="list-title">
+                  <h3>Agendamentos</h3>
+                  <span className="appointments-count">
+                    {filteredAppointments.length} agendamentos
+                  </span>
                 </div>
-              ))}
+              </div>
+
+              {loading ? (
+                <div className="loading-state">
+                  <p>Carregando agendamentos...</p>
+                </div>
+              ) : (
+                <div className="appointments-table">
+                  {filteredAppointments.map((appointment) => (
+                    <div key={appointment.id} className="appointment-row">
+                      <div className="appointment-time">
+                        <div className="time-display">
+                          <Clock size={16} />
+                          <span>{appointment.appointmentTime}</span>
+                        </div>
+                        <div className="date-display">
+                          {appointment.appointmentDate.toLocaleDateString(
+                            "pt-BR"
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="appointment-patient">
+                        <div className="patient-info">
+                          <h4>{appointment.patientName}</h4>
+                          <div className="patient-contact">
+                            <Phone size={14} />
+                            <span>{appointment.patientPhone}</span>
+                          </div>
+                          {appointment.patientEmail && (
+                            <div className="patient-contact">
+                              <Mail size={14} />
+                              <span>{appointment.patientEmail}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="appointment-details">
+                        <div className="appointment-type">
+                          {appointment.service}
+                        </div>
+                        <div className="appointment-doctor">
+                          {appointment.dentist}
+                        </div>
+                        <div className="appointment-duration">
+                          <Clock size={14} />
+                          <span>{appointment.duration} min</span>
+                        </div>
+                      </div>
+
+                      <div className="appointment-priority">
+                        <span
+                          className={`priority-badge priority-${appointment.priority}`}
+                        >
+                          {appointment.priority}
+                        </span>
+                      </div>
+
+                      <div className="appointment-status">
+                        <div className="status-badge">
+                          {getStatusIcon(appointment.status)}
+                          <span>{getStatusText(appointment.status)}</span>
+                        </div>
+                      </div>
+
+                      <div className="appointment-actions">
+                        <button
+                          className="action-btn"
+                          title="Editar"
+                          onClick={() =>
+                            handleAppointmentAction("edit", appointment.id)
+                          }
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button
+                          className="action-btn"
+                          title="Cancelar"
+                          onClick={() =>
+                            handleAppointmentAction("cancel", appointment.id)
+                          }
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                        <button
+                          className="action-btn"
+                          title="Mais opções"
+                          onClick={() =>
+                            handleAppointmentAction("delete", appointment.id)
+                          }
+                        >
+                          <MoreVertical size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </main>
 
-      {/* Sidebar Overlay */}
-      {sidebarOpen && (
-        <div 
-          className="sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
+      {isModalOpen && (
+        <AppointmentModal
+          onSubmit={handleSaveAppointment}
+          onCancel={() => setIsModalOpen(false)}
+          title="Novo Agendamento"
+          isLoading={loading}
         />
       )}
     </div>

@@ -19,8 +19,9 @@ const missingVars = Object.entries(requiredEnvVars)
 
 if (missingVars.length > 0) {
   throw new Error(
-    `Variáveis de ambiente do Firebase não encontradas: ${missingVars.join(', ')}. ` +
-    'Verifique se o arquivo .env está configurado corretamente.'
+    `Variáveis de ambiente do Firebase não encontradas: ${missingVars.join(
+      ", "
+    )}. ` + "Verifique se o arquivo .env está configurado corretamente."
   );
 }
 
@@ -34,17 +35,9 @@ const firebaseConfig = {
 };
 
 // Inicializar Firebase
-let app;
-let auth;
-let db;
 
-try {
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db = getFirestore(app);
-} catch (error) {
-  console.error('Erro ao inicializar Firebase:', error);
-  throw new Error('Falha na inicialização do Firebase. Verifique suas credenciais.');
-}
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 export { auth, db };
