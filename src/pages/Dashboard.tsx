@@ -370,10 +370,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 <h3>Ações Rápidas</h3>
               </div>
               <div className="quick-actions">
-                <button className="quick-action">
+                <Link to="/patients" className="quick-action">
                   <Users size={20} />
                   <span>Novo Paciente</span>
-                </button>
+                </Link>
                 <button className="quick-action">
                   <Calendar size={20} />
                   <span>Agendar Consulta</span>

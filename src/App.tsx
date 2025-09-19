@@ -13,6 +13,7 @@ import { useToast } from "./hooks/useToast";
 import { formatPhone } from "./utils/phoneMask";
 import Dashboard from "./pages/Dashboard";
 import Appointments from "./pages/Appointments";
+import Patients from "./pages/Patients";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/appointments" element={<Appointments />} />
+          <Route path="/patients" element={<Patients />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
