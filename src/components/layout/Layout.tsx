@@ -27,6 +27,7 @@ const sidebarItems = [
 
 const Page: React.FC<PageProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   return (
@@ -34,12 +35,16 @@ const Page: React.FC<PageProps> = ({ children }) => {
       <Sidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
+        sidebarExpanded={sidebarExpanded}
+        setSidebarExpanded={setSidebarExpanded}
         sidebarItems={sidebarItems}
       />
 
-      <main className="main-content">
+      <main className={`main-content ${sidebarExpanded ? 'sidebar-expanded' : 'sidebar-collapsed'}`}>
         <Header
           setSidebarOpen={setSidebarOpen}
+          sidebarExpanded={sidebarExpanded}
+          setSidebarExpanded={setSidebarExpanded}
           userMenuOpen={userMenuOpen}
           setUserMenuOpen={setUserMenuOpen}
         />

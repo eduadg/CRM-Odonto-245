@@ -579,7 +579,7 @@
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #111827;
+  color: #ffffff;
 }
 
 .appointments-count {
@@ -622,7 +622,7 @@
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  color: #111827;
+  color: #ffffff;
 }
 
 .date-display {
@@ -638,7 +638,7 @@
   margin: 0 0 8px 0;
   font-size: 1rem;
   font-weight: 600;
-  color: #111827;
+  color: #ffffff;
 }
 
 .patient-contact {
@@ -884,7 +884,10 @@
 
   .header-title h1,
   .stat-value,
-  .patient-info h4,
+  .patient-info h4 {
+    color: #ffffff;
+  }
+  
   .appointment-type,
   .list-title h3 {
     color: #f9fafb;
@@ -972,3 +975,5 @@
     color: #4f46e5;
   }
 }
+
+

@@ -57,6 +57,15 @@ const convertAppointmentToFirestore = (
 };
 
 export class AppointmentService {
+  // Alias methods for compatibility
+  async getAll(): Promise<Appointment[]> {
+    return this.getAllAppointments();
+  }
+
+  async create(data: CreateAppointmentData): Promise<Appointment> {
+    return this.createAppointment(data);
+  }
+
   async createAppointment(data: CreateAppointmentData): Promise<Appointment> {
     try {
       const conflicts = await this.checkTimeConflicts(

@@ -2,73 +2,68 @@
 
 import {
   AlertCircle,
-  Bell,
   Calendar,
   CalendarIcon,
   CheckCircle,
-  ChevronDown,
   Clock,
-  DollarSign,
   Edit,
   FileText,
-  Filter,
-  Home,
-  LogOut,
-  Mail,
-  Menu,
-  MoreVertical,
-  Phone,
   Plus,
   Search,
-  Settings,
-  Stethoscope,
   Trash2,
   TrendingUp,
-  User,
-  Users,
-  X,
 } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { AppointmentCalendar } from "../components/appointments/AppointmentCalendar";
 import { AppointmentModal } from "../components/appointments/AppointmentModal";
+import Page from "../components/layout/Layout";
 import { appointmentService } from "../services/appointmentService";
 import type { Appointment } from "../types/appointment";
 import "./Appointments.css";
 
 type AppointmentsProps = {};
 
-export const Appointments: React.FC<AppointmentsProps> = () => {
+const Appointments: React.FC<AppointmentsProps> = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [viewMode, setViewMode] = useState("list"); // 'list' ou 'calendar'
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+
   const [stats, setStats] = useState({
     total: 0,
-    confirmed: 0,
-    pending: 0,
-    cancelled: 0,
     today: 0,
-    thisWeek: 0,
-    confirmationRate: 0,
+    pending: 0,
+    confirmed: 0,
+    cancelled: 0,
   });
 
   useEffect(() => {
     loadAppointments();
-    loadStats();
   }, []);
 
   const loadAppointments = async () => {
     try {
       setLoading(true);
-      const data = await appointmentService.getAllAppointments();
+      const data = await appointmentService.getAll();
       setAppointments(data);
+      
+      // Calcular estatísticas
+      const today = new Date().toISOString().split('T')[0];
+      const todayAppointments = data.filter(apt => apt.appointmentDate && apt.appointmentDate.toISOString().split('T')[0] === today);
+      const pendingAppointments = data.filter(apt => apt.status === 'agendado');
+      const confirmedAppointments = data.filter(apt => apt.status === 'confirmado');
+      const cancelledAppointments = data.filter(apt => apt.status === 'cancelado');
+
+      setStats({
+        total: data.length,
+        today: todayAppointments.length,
+        pending: pendingAppointments.length,
+        confirmed: confirmedAppointments.length,
+        cancelled: cancelledAppointments.length,
+      });
     } catch (error) {
       console.error("Erro ao carregar agendamentos:", error);
     } finally {
@@ -76,12 +71,16 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
     }
   };
 
-  const loadStats = async () => {
+  const handleSaveAppointment = async (appointmentData: any) => {
     try {
-      const statsData = await appointmentService.getAppointmentStats();
-      setStats(statsData);
+      setLoading(true);
+      await appointmentService.create(appointmentData);
+      await loadAppointments();
+      setIsModalOpen(false);
     } catch (error) {
-      console.error("Erro ao carregar estatísticas:", error);
+      console.error("Erro ao salvar agendamento:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -151,218 +150,21 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
       color: "orange",
     },
     {
-      title: "Taxa de Confirmação",
-      value: `${stats.confirmationRate}%`,
-      change: "+3%",
+      title: "Cancelados",
+      value: stats.cancelled.toString(),
+      change: "+2%",
       trend: "up",
-      icon: TrendingUp,
-      color: "purple",
+      icon: AlertCircle,
+      color: "red",
     },
   ];
 
-  const handleSaveAppointment = async (data: any) => {
-    try {
-      setLoading(true);
-      await appointmentService.createAppointment(data);
-      await loadAppointments();
-      await loadStats();
-      setIsModalOpen(false);
-      console.log("Agendamento criado com sucesso!");
-    } catch (error: any) {
-      console.error("Erro ao criar agendamento:", error);
-      alert(error.message || "Erro ao criar agendamento");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDateSelect = (date: Date) => {
-    setSelectedDate(date);
-  };
-
-  const handleAppointmentClick = (appointment: Appointment) => {
-    console.log("Agendamento clicado:", appointment);
-    // Aqui você pode abrir um modal de detalhes ou edição
-  };
-
-  const handleAppointmentAction = async (
-    action: string,
-    appointmentId: string
-  ) => {
-    try {
-      setLoading(true);
-
-      switch (action) {
-        case "edit":
-          // Implementar edição
-          console.log("Editar agendamento:", appointmentId);
-          break;
-        case "cancel":
-          await appointmentService.updateAppointment(appointmentId, {
-            status: "cancelado",
-          });
-          await loadAppointments();
-          await loadStats();
-          break;
-        case "delete":
-          if (confirm("Tem certeza que deseja excluir este agendamento?")) {
-            await appointmentService.deleteAppointment(appointmentId);
-            await loadAppointments();
-            await loadStats();
-          }
-          break;
-      }
-    } catch (error: any) {
-      console.error("Erro na ação:", error);
-      alert(error.message || "Erro ao executar ação");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="appointments">
-      {/* Sidebar */}
-      <aside className={`sidebar ${sidebarOpen ? "sidebar-open" : ""}`}>
-        <div className="sidebar-header">
-          <div className="brand">
-            <div className="logo-circle">CR</div>
-            <div className="brand-text">
-              <h2>CRM Odonto</h2>
-              <p>Agendamentos</p>
-            </div>
-          </div>
-          <button
-            className="sidebar-close"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        <nav className="sidebar-nav">
-          {[
-            {
-              icon: Home,
-              label: "Dashboard",
-              active: false,
-              href: "/dashboard",
-            },
-            {
-              icon: Users,
-              label: "Pacientes",
-              active: false,
-              href: "/patients",
-            },
-            {
-              icon: Calendar,
-              label: "Agendamentos",
-              active: true,
-              href: "/appointments",
-            },
-            {
-              icon: Stethoscope,
-              label: "Consultas",
-              active: false,
-              href: "/consultations",
-            },
-            {
-              icon: FileText,
-              label: "Prontuários",
-              active: false,
-              href: "/records",
-            },
-            {
-              icon: DollarSign,
-              label: "Financeiro",
-              active: false,
-              href: "/financial",
-            },
-            {
-              icon: Settings,
-              label: "Configurações",
-              active: false,
-              href: "/settings",
-            },
-          ].map((item, index) => (
-            <Link
-              key={index}
-              to={item.href}
-              className={`nav-item ${item.active ? "nav-item-active" : ""}`}
-            >
-              <item.icon size={20} />
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </nav>
-
-        <div className="sidebar-footer">
-          <button className="logout-btn">
-            <LogOut size={16} />
-            <span>Sair</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="main-content">
-        {/* Header */}
-        <header className="appointments-header">
-          <div className="header-left">
-            <button
-              className="menu-toggle"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu size={20} />
-            </button>
-            <div className="header-title">
-              <h1>Agendamentos</h1>
-              <p>Gerencie consultas e horários dos seus pacientes</p>
-            </div>
-          </div>
-
-          <div className="header-right">
-            <button className="notification-btn">
-              <Bell size={20} />
-              <span className="notification-badge">3</span>
-            </button>
-
-            <div className="user-menu">
-              <button
-                className="user-btn"
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-              >
-                <div className="user-avatar">
-                  <User size={16} />
-                </div>
-                <span>Dr. João Santos</span>
-                <ChevronDown size={16} />
-              </button>
-
-              {userMenuOpen && (
-                <div className="user-dropdown">
-                  <a href="#" className="dropdown-item">
-                    <User size={16} />
-                    <span>Perfil</span>
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <Settings size={16} />
-                    <span>Configurações</span>
-                  </a>
-                  <hr className="dropdown-divider" />
-                  <a href="#" className="dropdown-item">
-                    <LogOut size={16} />
-                    <span>Sair</span>
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
-
-        {/* Appointments Content */}
+    <Page>
+      <div className="appointments">
+        {/* Content */}
         <div className="appointments-content">
-          {/* Stats Grid */}
+          {/* Stats */}
           <div className="stats-grid">
             {dynamicStats.map((stat, index) => (
               <div key={index} className={`stat-card stat-${stat.color}`}>
@@ -377,8 +179,8 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
                       stat.trend === "up" ? "stat-up" : "stat-down"
                     }`}
                   >
-                    <TrendingUp size={14} />
-                    <span>{stat.change}</span>
+                    <TrendingUp size={12} />
+                    {stat.change}
                   </div>
                 </div>
               </div>
@@ -386,174 +188,127 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
           </div>
 
           {/* Controls */}
-          <div className="controls-section">
-            <div className="controls-left">
+          <div className="appointments-controls">
+            <div className="search-filter">
               <div className="search-box">
                 <Search size={20} />
                 <input
                   type="text"
-                  placeholder="Buscar por paciente, médico ou especialidade..."
+                  placeholder="Buscar agendamentos..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-
-              <div className="filter-select">
-                <Filter size={16} />
-                <select
-                  value={selectedFilter}
-                  onChange={(e) => setSelectedFilter(e.target.value)}
-                >
-                  <option value="all">Todos os Status</option>
-                  <option value="confirmed">Confirmados</option>
-                  <option value="pending">Pendentes</option>
-                  <option value="cancelled">Cancelados</option>
-                </select>
-              </div>
+              <select
+                value={selectedFilter}
+                onChange={(e) => setSelectedFilter(e.target.value)}
+                className="filter-select"
+              >
+                <option value="all">Todos</option>
+                <option value="confirmed">Confirmados</option>
+                <option value="pending">Pendentes</option>
+                <option value="cancelled">Cancelados</option>
+              </select>
             </div>
 
-            <div className="controls-right">
-              <div className="view-toggle">
-                <button
-                  className={`view-btn ${viewMode === "list" ? "active" : ""}`}
-                  onClick={() => setViewMode("list")}
-                >
-                  <FileText size={16} />
-                  <span>Lista</span>
-                </button>
-                <button
-                  className={`view-btn ${
-                    viewMode === "calendar" ? "active" : ""
-                  }`}
-                  onClick={() => setViewMode("calendar")}
-                >
-                  <CalendarIcon size={16} />
-                  <span>Calendário</span>
-                </button>
-              </div>
-
+            <div className="view-controls">
               <button
-                className="btn-primary"
+                className={`view-btn ${viewMode === "list" ? "active" : ""}`}
+                onClick={() => setViewMode("list")}
+              >
+                <FileText size={20} />
+                Lista
+              </button>
+              <button
+                className={`view-btn ${viewMode === "calendar" ? "active" : ""}`}
+                onClick={() => setViewMode("calendar")}
+              >
+                <CalendarIcon size={20} />
+                Calendário
+              </button>
+              <button
+                className="add-btn"
                 onClick={() => setIsModalOpen(true)}
               >
-                <Plus size={16} />
-                <span>Novo Agendamento</span>
+                <Plus size={20} />
+                Novo Agendamento
               </button>
             </div>
           </div>
 
-          {/* Appointments List */}
-          {viewMode === "calendar" ? (
-            <div className="calendar-section">
-              <AppointmentCalendar
-                appointments={appointments}
-                onDateSelect={handleDateSelect}
-                onAppointmentClick={handleAppointmentClick}
-                selectedDate={selectedDate}
-              />
-            </div>
-          ) : (
+          {/* Content */}
+          {viewMode === "list" ? (
             <div className="appointments-list">
-              <div className="list-header">
-                <div className="list-title">
-                  <h3>Agendamentos</h3>
-                  <span className="appointments-count">
-                    {filteredAppointments.length} agendamentos
-                  </span>
-                </div>
-              </div>
-
               {loading ? (
                 <div className="loading-state">
+                  <div className="loading-spinner"></div>
                   <p>Carregando agendamentos...</p>
+                </div>
+              ) : filteredAppointments.length === 0 ? (
+                <div className="empty-state">
+                  <Calendar size={48} />
+                  <h3>Nenhum agendamento encontrado</h3>
+                  <p>
+                    {searchTerm || selectedFilter !== "all"
+                      ? "Tente ajustar os filtros de busca"
+                      : "Comece criando seu primeiro agendamento"}
+                  </p>
+                  <button
+                    className="btn-primary"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    <Plus size={20} />
+                    Novo Agendamento
+                  </button>
                 </div>
               ) : (
                 <div className="appointments-table">
+                  <div className="table-header">
+                    <div className="col-patient">Paciente</div>
+                    <div className="col-service">Serviço</div>
+                    <div className="col-dentist">Dentista</div>
+                    <div className="col-date">Data</div>
+                    <div className="col-time">Horário</div>
+                    <div className="col-status">Status</div>
+                    <div className="col-actions">Ações</div>
+                  </div>
                   {filteredAppointments.map((appointment) => (
-                    <div key={appointment.id} className="appointment-row">
-                      <div className="appointment-time">
-                        <div className="time-display">
-                          <Clock size={16} />
-                          <span>{appointment.appointmentTime}</span>
-                        </div>
-                        <div className="date-display">
-                          {appointment.appointmentDate.toLocaleDateString(
-                            "pt-BR"
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="appointment-patient">
+                    <div key={appointment.id} className="table-row">
+                      <div className="col-patient">
                         <div className="patient-info">
-                          <h4>{appointment.patientName}</h4>
-                          <div className="patient-contact">
-                            <Phone size={14} />
-                            <span>{appointment.patientPhone}</span>
+                          <div className="patient-avatar">
+                            {appointment.patientName.charAt(0)}
                           </div>
-                          {appointment.patientEmail && (
-                            <div className="patient-contact">
-                              <Mail size={14} />
-                              <span>{appointment.patientEmail}</span>
+                          <div>
+                            <div className="patient-name">
+                              {appointment.patientName}
                             </div>
-                          )}
+                            <div className="patient-phone">
+                              {appointment.patientPhone}
+                            </div>
+                          </div>
                         </div>
                       </div>
-
-                      <div className="appointment-details">
-                        <div className="appointment-type">
-                          {appointment.service}
-                        </div>
-                        <div className="appointment-doctor">
-                          {appointment.dentist}
-                        </div>
-                        <div className="appointment-duration">
-                          <Clock size={14} />
-                          <span>{appointment.duration} min</span>
-                        </div>
+                      <div className="col-service">{appointment.service}</div>
+                      <div className="col-dentist">{appointment.dentist}</div>
+                      <div className="col-date">
+                        {appointment.appointmentDate ? new Date(appointment.appointmentDate).toLocaleDateString("pt-BR") : 'N/A'}
                       </div>
-
-                      <div className="appointment-priority">
+                      <div className="col-time">{appointment.appointmentTime}</div>
+                      <div className="col-status">
                         <span
-                          className={`priority-badge priority-${appointment.priority}`}
+                          className={`status-badge status-${appointment.status}`}
                         >
-                          {appointment.priority}
+                          {getStatusIcon(appointment.status)}
+                          {getStatusText(appointment.status)}
                         </span>
                       </div>
-
-                      <div className="appointment-status">
-                        <div className="status-badge">
-                          {getStatusIcon(appointment.status)}
-                          <span>{getStatusText(appointment.status)}</span>
-                        </div>
-                      </div>
-
-                      <div className="appointment-actions">
-                        <button
-                          className="action-btn"
-                          title="Editar"
-                          onClick={() =>
-                            handleAppointmentAction("edit", appointment.id)
-                          }
-                        >
+                      <div className="col-actions">
+                        <button className="action-btn edit">
                           <Edit size={16} />
                         </button>
-                        <button
-                          className="action-btn"
-                          title="Cancelar"
-                          onClick={() =>
-                            handleAppointmentAction("cancel", appointment.id)
-                          }
-                        >
+                        <button className="action-btn delete">
                           <Trash2 size={16} />
-                        </button>
-                        <button
-                          className="action-btn"
-                          title="Mais opções"
-                          onClick={() =>
-                            handleAppointmentAction("delete", appointment.id)
-                          }
-                        >
-                          <MoreVertical size={16} />
                         </button>
                       </div>
                     </div>
@@ -561,19 +316,23 @@ export const Appointments: React.FC<AppointmentsProps> = () => {
                 </div>
               )}
             </div>
+          ) : (
+            <div className="calendar-view">
+              <AppointmentCalendar appointments={filteredAppointments} />
+            </div>
           )}
         </div>
-      </main>
 
-      {isModalOpen && (
-        <AppointmentModal
-          onSubmit={handleSaveAppointment}
-          onCancel={() => setIsModalOpen(false)}
-          title="Novo Agendamento"
-          isLoading={loading}
-        />
-      )}
-    </div>
+        {isModalOpen && (
+          <AppointmentModal
+            onSubmit={handleSaveAppointment}
+            onCancel={() => setIsModalOpen(false)}
+            title="Novo Agendamento"
+            isLoading={loading}
+          />
+        )}
+      </div>
+    </Page>
   );
 };
 

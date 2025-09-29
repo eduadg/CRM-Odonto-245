@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Edit, Trash2, Users } from "lucide-react";
 import Page from "../components/layout/Layout";
 import { PatientForm } from "../components/patients/PatientForm";
 import { SearchBar } from "../components/patients/SearchBar";
@@ -222,7 +223,9 @@ export const Patients: React.FC = () => {
               </div>
             ) : filteredPatients.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">👥</div>
+                <div className="empty-icon">
+                  <Users size={80} />
+                </div>
                 <h3>Nenhum paciente encontrado</h3>
                 <p>
                   {searchTerm
@@ -286,14 +289,14 @@ export const Patients: React.FC = () => {
                         onClick={() => handleEditPatient(patient)}
                         title="Editar paciente"
                       >
-                        ✏️
+                        <Edit size={14} />
                       </button>
                       <button
                         className="btn-delete"
                         onClick={() => handleDeletePatient(patient)}
                         title="Excluir paciente"
                       >
-                        🗑️
+                        <Trash2 size={14} />
                       </button>
                     </div>
 

@@ -14,7 +14,7 @@ const requiredEnvVars = {
 
 // Verificar se todas as variáveis de ambiente estão definidas
 const missingVars = Object.entries(requiredEnvVars)
-  .filter(([key, value]) => !value)
+  .filter(([, value]) => !value)
   .map(([key]) => key);
 
 if (missingVars.length > 0) {

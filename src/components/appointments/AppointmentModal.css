@@ -4,7 +4,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,14 +14,16 @@
 }
 
 .appointment-modal {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   max-width: 600px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  backdrop-filter: blur(10px);
 }
 
 .appointment-modal-header {
@@ -28,30 +31,30 @@
   justify-content: space-between;
   align-items: center;
   padding: 25px 30px 20px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: sticky;
   top: 0;
-  background: white;
-  border-radius: 12px 12px 0 0;
+  background: linear-gradient(135deg, #4f46e5, #8b5cf6);
+  border-radius: 16px 16px 0 0;
 }
 
 .appointment-modal-header h2 {
   margin: 0;
-  color: #2c3e50;
+  color: #ffffff;
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 .close-button {
-  background: none;
+  background: rgba(255, 255, 255, 0.2);
   border: none;
   cursor: pointer;
   padding: 8px;
-  border-radius: 6px;
-  color: #6c757d;
+  border-radius: 8px;
+  color: #ffffff;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -59,8 +62,8 @@
 }
 
 .close-button:hover {
-  background: #f8f9fa;
-  color: #495057;
+  background: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
 }
 
 .appointment-form-container {
@@ -74,15 +77,16 @@
 }
 
 .form-section {
-  background: #f8f9fa;
+  background: rgba(255, 255, 255, 0.05);
   padding: 25px;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .form-section h3 {
   margin: 0 0 20px 0;
-  color: #2c3e50;
+  color: #ffffff;
   font-size: 16px;
   font-weight: 600;
   display: flex;
@@ -94,7 +98,7 @@
   content: "";
   width: 4px;
   height: 18px;
-  background: #3498db;
+  background: #4f46e5;
   border-radius: 2px;
 }
 
@@ -116,8 +120,8 @@
 }
 
 .form-group label {
-  font-weight: 500;
-  color: #495057;
+  font-weight: 600;
+  color: #94a3b8;
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -125,7 +129,7 @@
 }
 
 .required-asterisk {
-  color: #e74c3c;
+  color: #ef4444;
   font-weight: bold;
 }
 
@@ -133,44 +137,45 @@
 .form-group select,
 .form-group textarea {
   padding: 12px 16px;
-  border: 2px solid #e9ecef;
-  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
   font-size: 14px;
   transition: all 0.2s ease;
-  background: white;
-  color: black;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
 }
 
 .form-group input:disabled,
 .form-group select:disabled,
 .form-group textarea:disabled {
-  background: #f8f9fa;
-  color: #6c757d;
+  background: rgba(255, 255, 255, 0.02);
+  color: #64748b;
   cursor: not-allowed;
 }
 
 .form-group input.error,
 .form-group select.error,
 .form-group textarea.error {
-  border-color: #e74c3c;
+  border-color: #ef4444;
 }
 
 .form-group input.error:focus,
 .form-group select.error:focus,
 .form-group textarea.error:focus {
-  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
 }
 
 .error-message {
-  color: #e74c3c;
+  color: #ef4444;
   font-size: 12px;
   font-weight: 500;
   margin-top: 4px;
@@ -192,9 +197,10 @@
 
 .priority-option {
   padding: 10px 15px;
-  border: 2px solid #e9ecef;
-  border-radius: 6px;
-  background: white;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
   cursor: pointer;
   text-align: center;
   font-size: 13px;
@@ -204,37 +210,43 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
+  backdrop-filter: blur(10px);
 }
 
 .priority-option:hover {
-  border-color: #3498db;
-  background: #f8f9fa;
+  border-color: #4f46e5;
+  background: rgba(79, 70, 229, 0.1);
+  color: #ffffff;
 }
 
 .priority-option.selected {
-  border-color: #3498db;
-  background: #3498db;
-  color: white;
+  border-color: #4f46e5;
+  background: rgba(79, 70, 229, 0.2);
+  color: #ffffff;
 }
 
 .priority-option.baixa.selected {
-  background: #27ae60;
-  border-color: #27ae60;
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  color: #10b981;
 }
 
 .priority-option.normal.selected {
-  background: #3498db;
-  border-color: #3498db;
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+  color: #3b82f6;
 }
 
 .priority-option.alta.selected {
-  background: #f39c12;
-  border-color: #f39c12;
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+  color: #f59e0b;
 }
 
 .priority-option.urgente.selected {
-  background: #e74c3c;
-  border-color: #e74c3c;
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #ef4444;
 }
 
 .form-actions {
@@ -242,12 +254,12 @@
   justify-content: flex-end;
   gap: 15px;
   padding-top: 20px;
-  border-top: 2px solid #f0f0f0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: 20px;
   position: sticky;
   bottom: 0;
-  background: white;
-  border-radius: 0 0 12px 12px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 0 0 16px 16px;
 }
 
 .btn-primary,
@@ -267,33 +279,37 @@
 }
 
 .btn-primary {
-  background: #3498db;
+  background: linear-gradient(135deg, #4f46e5, #8b5cf6);
   color: white;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #2980b9;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
 }
 
 .btn-primary:disabled {
-  background: #bdc3c7;
+  background: #64748b;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .btn-secondary {
-  background: #95a5a6;
-  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #7f8c8d;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
   transform: translateY(-1px);
 }
 
 .btn-secondary:disabled {
-  background: #bdc3c7;
+  background: rgba(255, 255, 255, 0.05);
   cursor: not-allowed;
   transform: none;
 }

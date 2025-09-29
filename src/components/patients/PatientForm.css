@@ -2,9 +2,11 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .patient-form-header {
@@ -13,14 +15,14 @@
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .patient-form-header h2 {
   margin: 0;
-  color: #2c3e50;
+  color: #ffffff;
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .patient-form {
@@ -30,15 +32,16 @@
 }
 
 .form-section {
-  background: #f8f9fa;
+  background: rgba(255, 255, 255, 0.05);
   padding: 25px;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .form-section h3 {
   margin: 0 0 20px 0;
-  color: #2c3e50;
+  color: #ffffff;
   font-size: 18px;
   font-weight: 600;
   display: flex;
@@ -50,19 +53,19 @@
   content: "";
   width: 4px;
   height: 20px;
-  background: #3498db;
+  background: #4f46e5;
   border-radius: 2px;
 }
 
 .form-subsection {
   margin-top: 25px;
   padding-top: 20px;
-  border-top: 1px solid #dee2e6;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .form-subsection h4 {
   margin: 0 0 15px 0;
-  color: #495057;
+  color: #94a3b8;
   font-size: 16px;
   font-weight: 500;
 }
@@ -81,8 +84,8 @@
 }
 
 .form-group label {
-  font-weight: 500;
-  color: #495057;
+  font-weight: 600;
+  color: #94a3b8;
   font-size: 14px;
 }
 
@@ -90,44 +93,45 @@
 .form-group select,
 .form-group textarea {
   padding: 12px 16px;
-  border: 2px solid #e9ecef;
-  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
   font-size: 14px;
   transition: all 0.2s ease;
-  background: white;
-  color: black;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
 }
 
 .form-group input:disabled,
 .form-group select:disabled,
 .form-group textarea:disabled {
-  background: #f8f9fa;
-  color: #6c757d;
+  background: rgba(255, 255, 255, 0.02);
+  color: #64748b;
   cursor: not-allowed;
 }
 
 .form-group input.error,
 .form-group select.error,
 .form-group textarea.error {
-  border-color: #e74c3c;
+  border-color: #ef4444;
 }
 
 .form-group input.error:focus,
 .form-group select.error:focus,
 .form-group textarea.error:focus {
-  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
 }
 
 .error-message {
-  color: #e74c3c;
+  color: #ef4444;
   font-size: 12px;
   font-weight: 500;
   margin-top: 4px;
@@ -139,20 +143,22 @@
 }
 
 .toggle-advanced {
-  background: #6c757d;
-  color: white;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 10px 20px;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   margin-bottom: 20px;
+  backdrop-filter: blur(10px);
 }
 
 .toggle-advanced:hover {
-  background: #5a6268;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
 }
 
 .form-actions {
@@ -160,7 +166,7 @@
   justify-content: flex-end;
   gap: 15px;
   padding-top: 20px;
-  border-top: 2px solid #f0f0f0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: 20px;
 }
 
@@ -177,33 +183,37 @@
 }
 
 .btn-primary {
-  background: #3498db;
+  background: linear-gradient(135deg, #4f46e5, #8b5cf6);
   color: white;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #2980b9;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
 }
 
 .btn-primary:disabled {
-  background: #bdc3c7;
+  background: #64748b;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .btn-secondary {
-  background: #95a5a6;
-  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #7f8c8d;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
   transform: translateY(-1px);
 }
 
 .btn-secondary:disabled {
-  background: #bdc3c7;
+  background: rgba(255, 255, 255, 0.05);
   cursor: not-allowed;
   transform: none;
 }

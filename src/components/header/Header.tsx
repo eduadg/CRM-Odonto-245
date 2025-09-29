@@ -1,14 +1,18 @@
-import { Bell, ChevronDown, LogOut, Menu, Settings, User } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Menu, Settings, User, ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 
 interface HeaderProps {
   setSidebarOpen: (open: boolean) => void;
+  sidebarExpanded: boolean;
+  setSidebarExpanded: (expanded: boolean) => void;
   userMenuOpen: boolean;
   setUserMenuOpen: (open: boolean) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
   setSidebarOpen,
+  sidebarExpanded,
+  setSidebarExpanded,
   userMenuOpen,
   setUserMenuOpen,
 }) => {
@@ -17,6 +21,13 @@ const Header: React.FC<HeaderProps> = ({
       <div className="header-left">
         <button className="menu-toggle" onClick={() => setSidebarOpen(true)}>
           <Menu size={20} />
+        </button>
+        <button 
+          className="sidebar-expand-toggle" 
+          onClick={() => setSidebarExpanded(!sidebarExpanded)}
+          title={sidebarExpanded ? "Contrair sidebar" : "Expandir sidebar"}
+        >
+          {sidebarExpanded ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
         </button>
         <div className="header-title">
           <h1>Dashboard</h1>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { CreatePatientData } from "../../types/patient";
 import { formatCPF } from "../../utils/cpfMask";
-import { formatPhone } from "../../utils/phoneMask";
+import { formatPhone } from "../../utils/PhoneMask";
 import "./PatientForm.css";
 
 interface PatientFormProps {

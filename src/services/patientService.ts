@@ -151,7 +151,7 @@ export const patientService = {
   async updatePatient(patientData: UpdatePatientData): Promise<Patient> {
     try {
       const { id, ...updateData } = patientData;
-      const data = convertPatientToFirestore(updateData);
+      const data = convertPatientToFirestore(updateData as CreatePatientData);
       
       const docRef = doc(db, COLLECTION_NAME, id);
       await updateDoc(docRef, data);

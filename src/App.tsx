@@ -10,10 +10,11 @@ import { ToastProvider } from "./components/toast/Toast";
 import { useAuth } from "./hooks/useAuth";
 import { useLoading } from "./hooks/useLoading";
 import { useToast } from "./hooks/useToast";
-import { formatPhone } from "./utils/phoneMask";
+import { formatPhone } from "./utils/PhoneMask";
 import Dashboard from "./pages/Dashboard";
 import Appointments from "./pages/Appointments";
 import Patients from "./pages/Patients";
+import Consultations from "./pages/Consultations";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/patients" element={<Patients />} />
+          <Route path="/consultations" element={<Consultations />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

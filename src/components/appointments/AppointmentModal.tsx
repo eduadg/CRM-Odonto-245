@@ -17,7 +17,7 @@ import type {
   AppointmentFormProps,
   CreateAppointmentData,
 } from "../../types/appointment";
-import { formatPhone } from "../../utils/phoneMask";
+import { formatPhone } from "../../utils/PhoneMask";
 import "./AppointmentModal.css";
 
 export const AppointmentModal: React.FC<AppointmentFormProps> = ({

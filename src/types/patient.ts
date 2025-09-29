@@ -65,6 +65,9 @@ export interface CreatePatientData {
     notes?: string;
   };
   dentalInfo?: {
+    lastVisit?: Date;
+    nextAppointment?: Date;
+    treatmentHistory?: string[];
     notes?: string;
   };
 }
