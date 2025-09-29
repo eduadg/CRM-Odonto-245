@@ -593,9 +593,24 @@
   padding: 0;
 }
 
-.appointment-row {
+.table-header {
   display: grid;
-  grid-template-columns: 120px 1fr 200px 200px 120px 80px;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 1fr 100px;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 24px;
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 1fr 100px;
   gap: 16px;
   align-items: center;
   padding: 20px 24px;
@@ -603,11 +618,11 @@
   transition: all 0.2s ease;
 }
 
-.appointment-row:hover {
+.table-row:hover {
   background: rgba(79, 70, 229, 0.02);
 }
 
-.appointment-row:last-child {
+.table-row:last-child {
   border-bottom: none;
 }
 
@@ -702,33 +717,37 @@
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 500;
+  white-space: nowrap;
 }
 
-.status-confirmed {
-  color: #10b981;
-}
-
-.status-pending {
-  color: #f59e0b;
-}
-
-.status-cancelled {
-  color: #ef4444;
-}
-
-.status-badge {
+.status-badge.status-confirmed {
   background: rgba(16, 185, 129, 0.1);
   color: #10b981;
 }
 
-.status-pending .status-badge {
+.status-badge.status-pending {
   background: rgba(245, 158, 11, 0.1);
   color: #f59e0b;
 }
 
-.status-cancelled .status-badge {
+.status-badge.status-cancelled {
   background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
+}
+
+.status-badge.status-agendado {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.status-badge.status-em-andamento {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
+}
+
+.status-badge.status-concluido {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
 }
 
 .appointment-actions {
@@ -755,6 +774,31 @@
 .action-btn:hover {
   background: rgba(0, 0, 0, 0.05);
   color: #111827;
+}
+
+/* Status Icons */
+.status-confirmed {
+  color: #10b981;
+}
+
+.status-pending {
+  color: #f59e0b;
+}
+
+.status-cancelled {
+  color: #ef4444;
+}
+
+.status-agendado {
+  color: #3b82f6;
+}
+
+.status-em-andamento {
+  color: #8b5cf6;
+}
+
+.status-concluido {
+  color: #10b981;
 }
 
 /* Sidebar Overlay */
@@ -790,19 +834,51 @@
     display: block;
   }
   
-  .appointment-row {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    padding: 16px;
+  .table-header {
+    display: none;
   }
   
-  .appointment-time,
-  .appointment-patient,
-  .appointment-details,
-  .appointment-location,
-  .appointment-status,
-  .appointment-actions {
-    grid-column: 1;
+  .table-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.9);
+  }
+  
+  .col-patient,
+  .col-service,
+  .col-dentist,
+  .col-date,
+  .col-time,
+  .col-status,
+  .col-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  }
+  
+  .col-actions {
+    border-bottom: none;
+    justify-content: center;
+  }
+  
+  .col-patient::before,
+  .col-service::before,
+  .col-dentist::before,
+  .col-date::before,
+  .col-time::before,
+  .col-status::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 0.85rem;
+    min-width: 100px;
   }
 }
 

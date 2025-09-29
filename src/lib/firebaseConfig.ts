@@ -21,7 +21,12 @@ if (missingVars.length > 0) {
   throw new Error(
     `Variáveis de ambiente do Firebase não encontradas: ${missingVars.join(
       ", "
-    )}. ` + "Verifique se o arquivo .env está configurado corretamente."
+    )}. ` + 
+    "Para resolver este problema:\n" +
+    "1. Crie um arquivo .env na raiz do projeto\n" +
+    "2. Adicione as variáveis VITE_FIREBASE_* com suas credenciais do Firebase Console\n" +
+    "3. Consulte o arquivo FIREBASE_SETUP.md para instruções detalhadas\n" +
+    "4. Reinicie o servidor de desenvolvimento"
   );
 }
 

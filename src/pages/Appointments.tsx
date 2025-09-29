@@ -86,11 +86,15 @@ const Appointments: React.FC<AppointmentsProps> = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "confirmed":
+      case "confirmado":
         return <CheckCircle size={16} className="status-confirmed" />;
-      case "pending":
-        return <Clock size={16} className="status-pending" />;
-      case "cancelled":
+      case "agendado":
+        return <Clock size={16} className="status-agendado" />;
+      case "em-andamento":
+        return <Clock size={16} className="status-em-andamento" />;
+      case "concluido":
+        return <CheckCircle size={16} className="status-concluido" />;
+      case "cancelado":
         return <AlertCircle size={16} className="status-cancelled" />;
       default:
         return <Clock size={16} />;
@@ -99,11 +103,15 @@ const Appointments: React.FC<AppointmentsProps> = () => {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case "confirmed":
+      case "confirmado":
         return "Confirmado";
-      case "pending":
-        return "Pendente";
-      case "cancelled":
+      case "agendado":
+        return "Agendado";
+      case "em-andamento":
+        return "Em Andamento";
+      case "concluido":
+        return "Concluído";
+      case "cancelado":
         return "Cancelado";
       default:
         return "Desconhecido";
@@ -205,9 +213,11 @@ const Appointments: React.FC<AppointmentsProps> = () => {
                 className="filter-select"
               >
                 <option value="all">Todos</option>
-                <option value="confirmed">Confirmados</option>
-                <option value="pending">Pendentes</option>
-                <option value="cancelled">Cancelados</option>
+                <option value="agendado">Agendados</option>
+                <option value="confirmado">Confirmados</option>
+                <option value="em-andamento">Em Andamento</option>
+                <option value="concluido">Concluídos</option>
+                <option value="cancelado">Cancelados</option>
               </select>
             </div>
 
@@ -274,7 +284,7 @@ const Appointments: React.FC<AppointmentsProps> = () => {
                   </div>
                   {filteredAppointments.map((appointment) => (
                     <div key={appointment.id} className="table-row">
-                      <div className="col-patient">
+                      <div className="col-patient" data-label="Paciente">
                         <div className="patient-info">
                           <div className="patient-avatar">
                             {appointment.patientName.charAt(0)}
@@ -289,13 +299,13 @@ const Appointments: React.FC<AppointmentsProps> = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="col-service">{appointment.service}</div>
-                      <div className="col-dentist">{appointment.dentist}</div>
-                      <div className="col-date">
+                      <div className="col-service" data-label="Serviço">{appointment.service}</div>
+                      <div className="col-dentist" data-label="Dentista">{appointment.dentist}</div>
+                      <div className="col-date" data-label="Data">
                         {appointment.appointmentDate ? new Date(appointment.appointmentDate).toLocaleDateString("pt-BR") : 'N/A'}
                       </div>
-                      <div className="col-time">{appointment.appointmentTime}</div>
-                      <div className="col-status">
+                      <div className="col-time" data-label="Horário">{appointment.appointmentTime}</div>
+                      <div className="col-status" data-label="Status">
                         <span
                           className={`status-badge status-${appointment.status}`}
                         >
@@ -303,7 +313,7 @@ const Appointments: React.FC<AppointmentsProps> = () => {
                           {getStatusText(appointment.status)}
                         </span>
                       </div>
-                      <div className="col-actions">
+                      <div className="col-actions" data-label="Ações">
                         <button className="action-btn edit">
                           <Edit size={16} />
                         </button>
